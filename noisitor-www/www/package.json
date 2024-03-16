@@ -12,6 +12,7 @@
     "vite": "^5.1.6"
   },
   "dependencies": {
-    "@picocss/pico": "^2.0.6"
+    "@picocss/pico": "^2.0.6",
+    "htmx.org": "^1.9.11"
   }
 }

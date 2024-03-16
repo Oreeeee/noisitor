@@ -5,8 +5,11 @@ app {
 .header {
   text-align: center;
   width: 100%;
-  height: 50px;
   margin: 20px;
+}
+
+#middle-column {
+  background-color: darkred;
 }
 
 #app-grid {

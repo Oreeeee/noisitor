@@ -11,6 +11,9 @@ services:
     environment:
       - NOISITOR_IFACE=${NOISITOR_IFACE}
       - NOISITOR_PORTS=${NOISITOR_PORTS}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
     network_mode: "host"
     cap_add:
       - NET_ADMIN
@@ -20,3 +23,8 @@ services:
     restart: always
     volumes:
       - ./db:/data/db
+    ports:
+      - 27017:${DB_PORT}
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}

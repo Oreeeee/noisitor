@@ -14,3 +14,9 @@ services:
     network_mode: "host"
     cap_add:
       - NET_ADMIN
+
+  db:
+    image: mongo
+    restart: always
+    volumes:
+      - ./db:/data/db

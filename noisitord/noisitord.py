@@ -1,10 +1,20 @@
 import scapy.all as sc
+from dataclasses import dataclass
 import os
+import time
 
 
 class NoisitordConfig:
     interface: str
     ports: list[int]
+
+
+@dataclass
+class NoisitordEvent:
+    ip: str
+    port: int
+    protocol: str
+    time: str
 
 
 def load_config() -> None:
@@ -29,8 +39,13 @@ def create_filter() -> str:
 
 def sniffed_event(pkt) -> None:
     try:
-        print(pkt[1].src)
-    except (ValueError, AttributeError):
+        packet_info: NoisitordEvent = NoisitordEvent(
+            pkt[1].src, pkt[2].dport, ("tcp" if pkt[1].proto == 6 else "udp"), int(time.time())
+        )
+        print(
+            f"SRC: {packet_info.ip}\nPORT: {packet_info.port}\nPROTO: {packet_info.protocol}\nTIME: {packet_info.time}"
+        )
+    except (ValueError, AttributeError) as e:
         pass
 
 

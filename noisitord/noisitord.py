@@ -2,6 +2,7 @@ import pyshark
 from dataclasses import dataclass
 import os
 import time
+import sys
 
 
 class NoisitordConfig:
@@ -31,8 +32,7 @@ def create_filter() -> str:
     )  # This will only list incoming packets
     args.append("and")
     # Add ports
-    for i in range(len(NoisitordConfig.ports)):
-        port: int = NoisitordConfig.ports[i]
+    for port in NoisitordConfig.ports:
         args.append(f"tcp.port == {port}")
         args.append("or")
     args.pop()
@@ -45,8 +45,11 @@ def main():
         interface=NoisitordConfig.interface, display_filter=create_filter()
     )
     for packet in cap.sniff_continuously():
-        packet_nst = NoisitordEvent(packet.ip.src, packet.tcp.dstport, "tcp", int(time.time()))
+        packet_nst = NoisitordEvent(
+            packet.ip.src, packet.tcp.dstport, "tcp", int(time.time())
+        )
         print(packet_nst.ip, packet_nst.port, packet_nst.protocol, packet_nst.time)
+        sys.stdout.flush()  # Docker Compose workaround
 
 
 if __name__ == "__main__":

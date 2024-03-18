@@ -1,0 +1,16 @@
+name: noisitor
+
+services:
+  www:
+    build: ./noisitor-www
+    ports:
+      - 8000:8000
+
+  monitor:
+    build: ./noisitord
+    environment:
+      - NOISITOR_IFACE=${NOISITOR_IFACE}
+      - NOISITOR_PORTS=${NOISITOR_PORTS}
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN

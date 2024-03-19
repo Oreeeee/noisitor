@@ -9,7 +9,8 @@
     <div id="app">
       <div class="header">
         <h1>Noisitor</h1>
-        <h6>☕ Uptime: 00:00:00</h6>
+        <!-- TODO: Fetch uptime only once and update it locally in the browser -->
+        <h6 hx-get="/htmx/uptime" hx-trigger="every 1s">Loading...</h6>
       </div>
 
       <div id="app-grid" class="grid">

@@ -9,7 +9,6 @@
     <div id="app">
       <div class="header" class="pico">
         <h1>Noisitor</h1>
-        <!-- TODO: Fetch uptime only once and update it locally in the browser -->
         <h6 hx-get="/htmx/uptime" hx-trigger="every 1s">Loading...</h6>
       </div>
 
@@ -26,7 +25,7 @@
           <div id="ip-map"></div>
         </div>
         <div id="right-column" class="pico">
-          <p>Last 50 unique IPs:</p>
+          <p>Last 50 events:</p>
           <div
             id="last-events-container"
             hx-get="/htmx/last-events"

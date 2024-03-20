@@ -15,3 +15,16 @@ app {
 #app-grid {
   padding: 30px;
 }
+
+#last-events-container {
+  overflow: auto;
+  height: 600px;
+}
+
+.last-event {
+  outline: 1px;
+  outline-style: solid;
+  outline-color: red;
+  margin: 20px;
+  padding: 5px;
+}

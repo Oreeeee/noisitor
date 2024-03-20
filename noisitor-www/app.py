@@ -18,6 +18,15 @@ class UptimeCounter:
             cls.uptime += 1
 
 
+LAST_EVENT_DIV = """
+<div class="last-event">
+    <h3>{ip}</h1>
+    <h5>Port: {port}</h2>
+    <h5>Time: {time}</h2>
+</div>
+"""
+
+
 @get("/data/unique-ips")
 async def unique_ips() -> str:
     return str(len(await events_col.distinct("ip")))
@@ -26,6 +35,11 @@ async def unique_ips() -> str:
 @get("/data/total-events")
 async def total_events() -> str:
     return str(await events_col.count_documents({}))
+
+
+@get("/htmx/last-events")
+async def last_events() -> str:
+    return 5 * LAST_EVENT_DIV.format(ip="127.0.0.1", port=6969, time=300300300)
 
 
 @get("/htmx/uptime")
@@ -48,6 +62,7 @@ app = Litestar(
     route_handlers=[
         unique_ips,
         total_events,
+        last_events,
         get_uptime,
         create_static_files_router(path="/", directories=["www/dist/"], html_mode=True),
         create_static_files_router(path="/assets", directories=["www/dist/assets"]),

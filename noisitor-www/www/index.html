@@ -27,6 +27,11 @@
         </div>
         <div id="right-column" class="pico">
           <p>Last 50 unique IPs:</p>
+          <div
+            id="last-events-container"
+            hx-get="/htmx/last-events"
+            hx-trigger="every 5s"
+          ></div>
         </div>
       </div>
     </div>

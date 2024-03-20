@@ -6,8 +6,8 @@
     <title>Noisitor</title>
   </head>
   <body>
-    <div id="app" class="pico">
-      <div class="header">
+    <div id="app">
+      <div class="header" class="pico">
         <h1>Noisitor</h1>
         <!-- TODO: Fetch uptime only once and update it locally in the browser -->
         <h6 hx-get="/htmx/uptime" hx-trigger="every 1s">Loading...</h6>
@@ -22,7 +22,9 @@
           <h1 hx-get="/data/total-events" hx-trigger="every 5s">Loading...</h1>
           <br />
         </div>
-        <div id="middle-column">Insert map with event locations here</div>
+        <div id="middle-column">
+          <div id="ip-map"></div>
+        </div>
         <div id="right-column" class="pico">
           <p>Last 50 unique IPs:</p>
         </div>

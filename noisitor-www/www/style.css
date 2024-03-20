@@ -8,8 +8,8 @@ app {
   margin: 20px;
 }
 
-#middle-column {
-  background-color: darkred;
+#ip-map {
+  height: 400px;
 }
 
 #app-grid {

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.0.6",
-    "htmx.org": "^1.9.11"
+    "htmx.org": "^1.9.11",
+    "leaflet": "^1.9.4"
   }
 }

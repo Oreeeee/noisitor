@@ -1,5 +1,6 @@
 from litestar import Litestar, get
 from litestar.static_files import create_static_files_router
+from datetime import timedelta
 from threading import Thread
 import motor.motor_asyncio
 import traceback
@@ -29,7 +30,7 @@ async def total_events() -> str:
 
 @get("/htmx/uptime")
 async def get_uptime() -> str:
-    return "☕ Uptime: " + str(UptimeCounter.uptime)
+    return "☕ Uptime: " + str(timedelta(seconds=UptimeCounter.uptime))
 
 
 # Connecting to DB stuff

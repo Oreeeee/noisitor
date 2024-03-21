@@ -2,6 +2,7 @@ from litestar import Litestar, get
 from litestar.static_files import create_static_files_router
 from datetime import timedelta
 from threading import Thread
+from datetime import datetime
 import motor.motor_asyncio
 import traceback
 import time
@@ -39,7 +40,18 @@ async def total_events() -> str:
 
 @get("/htmx/last-events")
 async def last_events() -> str:
-    return 5 * LAST_EVENT_DIV.format(ip="127.0.0.1", port=6969, time=300300300)
+    event_list: list[str] = []
+    async for event in events_col.find(limit=50):
+        event_list.append(
+            LAST_EVENT_DIV.format(
+                ip=event["ip"],
+                port=event["port"],
+                time=datetime.fromtimestamp(event["time"]).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),
+            )
+        )
+    return "".join(event_list)
 
 
 @get("/htmx/uptime")

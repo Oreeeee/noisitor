@@ -1,0 +1,1 @@
+Put IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE database from https://lite.ip2location.com/ in BIN format here and name it IPDB.bin

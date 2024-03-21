@@ -13,6 +13,7 @@ class NoisitordConfig:
     db_username: str
     db_password: str
     db_port: int
+    debug: bool
 
 
 @dataclass
@@ -30,6 +31,7 @@ def load_config() -> None:
     NoisitordConfig.db_username = os.environ["DB_USERNAME"]
     NoisitordConfig.db_password = os.environ["DB_PASSWORD"]
     NoisitordConfig.db_port = int(os.environ["DB_PORT"])
+    NoisitordConfig.debug = False if os.environ["NOISITORD_DEBUG"] == "false" else True
 
 
 def create_filter() -> str:
@@ -74,19 +76,20 @@ def get_geolocation(ip2loc_db: IP2Location.IP2Location, ip: str) -> dict[str, st
     }
 
 
-# def fake_ip_generator():
-#     import random
-#     import time
-#     import ipaddress
-#     from types import SimpleNamespace
-#     while True:
-#         time.sleep(random.randint(1, 10))
-#         yield SimpleNamespace(
-#             ip=SimpleNamespace(
-#                 src=str(ipaddress.ip_address(random.randint(0, 4294967295)))
-#             ),
-#             tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
-#         )
+def fake_ip_generator():
+    import random
+    import time
+    import ipaddress
+    from types import SimpleNamespace
+
+    while True:
+        time.sleep(random.randint(1, 10))
+        yield SimpleNamespace(
+            ip=SimpleNamespace(
+                src=str(ipaddress.ip_address(random.randint(0, 4294967295)))
+            ),
+            tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
+        )
 
 
 def main() -> None:
@@ -100,11 +103,14 @@ def main() -> None:
         print("IP2Location database not availible. Geolocation will be disabled.")
         ip2loc_db = None
 
-    cap = pyshark.LiveCapture(
-        interface=NoisitordConfig.interface, display_filter=create_filter()
-    )
-    for packet in cap.sniff_continuously():
-        # for packet in fake_ip_generator():
+    if not NoisitordConfig.debug:
+        sniffer: function = pyshark.LiveCapture(
+            interface=NoisitordConfig.interface, display_filter=create_filter()
+        ).sniff_continuously
+    else:
+        sniffer: function = fake_ip_generator
+
+    for packet in sniffer():
         packet_nst = NoisitordEvent(
             packet.ip.src, packet.tcp.dstport, "tcp", int(time.time())
         )

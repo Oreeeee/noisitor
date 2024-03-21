@@ -5,6 +5,7 @@ import time
 import sys
 import pymongo
 import IP2Location
+import logging
 
 
 class NoisitordConfig:
@@ -50,6 +51,7 @@ def create_filter() -> str:
 
 
 def db_load() -> any:
+    logger.debug("Connecting to database")
     dbc = pymongo.MongoClient(
         host="127.0.0.1",
         port=NoisitordConfig.db_port,
@@ -64,7 +66,7 @@ def db_load() -> any:
 
 def get_geolocation(ip2loc_db: IP2Location.IP2Location, ip: str) -> dict[str, str]:
     rec = ip2loc_db.get_all(ip)
-    return {
+    loc = {
         "ip": ip,
         "lat": rec.latitude,
         "long": rec.longitude,
@@ -74,6 +76,8 @@ def get_geolocation(ip2loc_db: IP2Location.IP2Location, ip: str) -> dict[str, st
         "zip": rec.zipcode,
         "tz": rec.timezone,
     }
+    logger.debug(f"Location data: {loc}")
+    return loc
 
 
 def fake_ip_generator():
@@ -84,6 +88,7 @@ def fake_ip_generator():
 
     while True:
         time.sleep(random.randint(1, 10))
+        logger.debug("Generating random IP")
         yield SimpleNamespace(
             ip=SimpleNamespace(
                 src=str(ipaddress.ip_address(random.randint(0, 4294967295)))
@@ -93,14 +98,17 @@ def fake_ip_generator():
 
 
 def main() -> None:
-    load_config()
     events_col, geolocation_col = db_load()
 
     # IP2Location initialisation
+    logger.debug("Checking for IP2Location DB presence")
     if os.path.isfile("/ip2location/IPDB.BIN"):
+        logger.debug("IP2Location DB found")
         ip2loc_db = IP2Location.IP2Location("/ip2location/IPDB.BIN")
     else:
-        print("IP2Location database not availible. Geolocation will be disabled.")
+        logger.warning(
+            "IP2Location database not availible. Geolocation will be disabled."
+        )
         ip2loc_db = None
 
     if not NoisitordConfig.debug:
@@ -108,23 +116,45 @@ def main() -> None:
             interface=NoisitordConfig.interface, display_filter=create_filter()
         ).sniff_continuously
     else:
+        logger.debug("Using fake_ip_generator() as sniffer")
         sniffer: function = fake_ip_generator
 
+    logger.debug("Starting sniffing loop")
     for packet in sniffer():
+        logger.debug("Packet just received")
         packet_nst = NoisitordEvent(
             packet.ip.src, packet.tcp.dstport, "tcp", int(time.time())
         )
+        logger.debug("Adding the packet info to the DB")
         events_col.insert_one(asdict(packet_nst))
         # Save geolocation
         if ip2loc_db != None:
+            logger.debug("Getting geolocation data")
             geolocation_col.replace_one(
                 {"ip": packet_nst.ip},
                 get_geolocation(ip2loc_db, packet_nst.ip),
                 upsert=True,
             )
-        print(packet_nst.ip, packet_nst.port, packet_nst.protocol, packet_nst.time)
-        sys.stdout.flush()  # Docker Compose logging lag workaround
+        logger.info(
+            f"An event just happenned: {packet_nst.ip}, {packet_nst.port}, {packet_nst.protocol}, {packet_nst.time}",
+        )
 
 
 if __name__ == "__main__":
+    load_config()
+
+    # Initialize logger
+    if NoisitordConfig.debug:
+        logging_level = logging.DEBUG
+    else:
+        logging_level = logging.INFO
+
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(
+        format="%(asctime)s | %(levelname)s: %(message)s", level=logging_level
+    )
+
+    # Log the config loaded, because we couldn't do it before due to not knowing
+    # if we're in debug mode
+    logger.debug(f"Loaded config: {NoisitordConfig.__dict__}")
     main()

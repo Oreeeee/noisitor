@@ -41,7 +41,7 @@ async def total_events() -> str:
 @get("/htmx/last-events")
 async def last_events() -> str:
     event_list: list[str] = []
-    async for event in events_col.find(limit=50):
+    async for event in events_col.find(limit=50).sort("_id", -1):
         event_list.append(
             LAST_EVENT_DIV.format(
                 ip=event["ip"],

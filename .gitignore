@@ -1,7 +1,6 @@
 .venv/
 __pycache__/
 .env
-docker-compose.yml
 db/
 ip2location/*
 !ip2location/README.txt

@@ -60,7 +60,7 @@ def db_load() -> any:
     )
     noisitor_db = dbc["noisitor"]  # Noisitor database
     events_col = noisitor_db["events"]  # Event collection in Noisitor DB
-    geolocation_col = noisitor_db["geoloctation"]
+    geolocation_col = noisitor_db["geolocation"]
     return events_col, geolocation_col
 
 

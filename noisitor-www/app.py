@@ -59,12 +59,22 @@ async def get_uptime() -> str:
     return "☕ Uptime: " + str(timedelta(seconds=UptimeCounter.uptime))
 
 
+@get("/data/map")
+async def get_map() -> str:
+    points: list[str] = []
+    async for point in geolocation_col.find():
+        print("point")
+        points.append(point["lat"] + "|" + point["long"])
+    return "\n".join(points)
+
+
 # Connecting to DB stuff
 dbc = motor.motor_asyncio.AsyncIOMotorClient(
     "db", 27017, username=os.environ["DB_USERNAME"], password=os.environ["DB_PASSWORD"]
 )
 noisitor_db = dbc["noisitor"]
 events_col = noisitor_db["events"]
+geolocation_col = noisitor_db["geolocation"]
 
 # Uptime counter
 uptime: int = 0
@@ -76,6 +86,7 @@ app = Litestar(
         total_events,
         last_events,
         get_uptime,
+        get_map,
         create_static_files_router(path="/", directories=["www/dist/"], html_mode=True),
         create_static_files_router(path="/assets", directories=["www/dist/assets"]),
     ],

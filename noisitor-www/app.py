@@ -20,10 +20,13 @@ class UptimeCounter:
 
 
 LAST_EVENT_DIV = """
-<div class="last-event">
+<div class="last-event grid">
+    <div><img src="https://catamphetamine.gitlab.io/country-flag-icons/3x2/{country}.svg"></div>
+    <div>
     <h3>{ip}</h1>
     <h5>Port: {port}</h2>
     <h5>Time: {time}</h2>
+    </div>
 </div>
 """
 
@@ -44,6 +47,9 @@ async def last_events() -> str:
     async for event in events_col.find(limit=50).sort("_id", -1):
         event_list.append(
             LAST_EVENT_DIV.format(
+                country=(await geolocation_col.find_one({"ip": event["ip"]}))[
+                    "country_short"
+                ],
                 ip=event["ip"],
                 port=event["port"],
                 time=datetime.fromtimestamp(event["time"]).strftime(

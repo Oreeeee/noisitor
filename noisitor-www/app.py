@@ -9,16 +9,6 @@ import time
 import os
 
 
-class UptimeCounter:
-    uptime: int = 0
-
-    @classmethod
-    def count_uptime(cls) -> None:
-        while True:
-            time.sleep(1)
-            cls.uptime += 1
-
-
 LAST_EVENT_DIV = """
 <div class="last-event grid">
     <div><img src="https://catamphetamine.gitlab.io/country-flag-icons/3x2/{country}.svg"></div>
@@ -60,9 +50,9 @@ async def last_events() -> str:
     return "".join(event_list)
 
 
-@get("/htmx/uptime")
+@get("/data/started-time")
 async def get_uptime() -> str:
-    return "☕ Uptime: " + str(timedelta(seconds=UptimeCounter.uptime))
+    return STARTED_TIME
 
 
 @get("/data/map")
@@ -82,9 +72,7 @@ noisitor_db = dbc["noisitor"]
 events_col = noisitor_db["events"]
 geolocation_col = noisitor_db["geolocation"]
 
-# Uptime counter
-uptime: int = 0
-Thread(target=UptimeCounter.count_uptime).start()
+STARTED_TIME = str(int(time.time()))
 
 app = Litestar(
     route_handlers=[

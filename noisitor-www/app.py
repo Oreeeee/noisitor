@@ -93,8 +93,9 @@ app = Litestar(
         last_events,
         get_uptime,
         get_map,
-        create_static_files_router(path="/", directories=["www/dist/"], html_mode=True),
-        create_static_files_router(path="/assets", directories=["www/dist/assets"]),
+        create_static_files_router(
+            path="/", directories=["www/build/"], html_mode=True
+        ),
     ],
     exception_handlers={Exception: lambda r, e: traceback.format_exc()},
 )

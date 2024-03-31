@@ -1,19 +1,14 @@
 <script>
+  import { fetchUniqueIPs, fetchEventsLogged } from "$lib/fetchStats";
   var uniqueIPs = 0;
   var eventsLogged = 0;
 
-  function fetchStats() {
-    // TODO: Make this fetching better, maybe fetch one JSON file?
-    fetch("/data/unique-ips")
-      .then((x) => x.text())
-      .then((data) => (uniqueIPs = data));
-
-    fetch("/data/total-events")
-      .then((x) => x.text())
-      .then((data) => (eventsLogged = data));
-  }
-
-  setInterval(fetchStats, 5000);
+  setInterval(() => {
+    fetchUniqueIPs()
+      .then(ret => uniqueIPs = ret)
+    fetchEventsLogged()
+      .then(ret => eventsLogged = ret)
+  }, 5000);
 </script>
 
 <div id="app-grid" class="grid">

@@ -22,3 +22,15 @@ export async function fetchEventsLogged(server = false) {
   const ret = await res.text();
   return ret;
 }
+
+export async function fetchLastEvents(server = false) {
+  let endpoint;
+  if (server) {
+    endpoint = "http://backend:8000/data/last-events";
+  } else {
+    endpoint = "/data/last-events";
+  }
+  const res = await fetch(endpoint);
+  const ret = await res.json();
+  return ret;
+}

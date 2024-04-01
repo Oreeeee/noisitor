@@ -8,6 +8,7 @@
   import { onMount } from "svelte";
   import LastEvent from "../components/LastEvent.svelte";
   import Stats from "../components/Stats.svelte";
+  import EventsMap from "../components/EventsMap.svelte";
 
   // Initial data fetch on server
   var uniqueIPs = data.uniqueIPs;
@@ -32,7 +33,11 @@
   </div>
 
   <div id="middle-column">
-    <div id="ip-map"></div>
+    <div class="pico">
+      <h3>Event sources map:</h3>
+      <hr />
+    </div>
+    <EventsMap />
   </div>
 
   <div id="right-column" class="pico">

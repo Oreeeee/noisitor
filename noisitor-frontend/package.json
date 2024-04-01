@@ -17,6 +17,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@picocss/pico": "^2.0.6"
+		"@picocss/pico": "^2.0.6",
+		"leaflet": "^1.9.4",
+		"leaflet.markercluster": "^1.5.3"
 	}
 }

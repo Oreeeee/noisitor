@@ -1,14 +1,19 @@
 <script>
   export let data;
   import { fetchUniqueIPs, fetchEventsLogged } from "$lib/fetchStats";
+  import { onMount } from "svelte";
 
+  // Initial data fetch on server
   var uniqueIPs = data.uniqueIPs;
   var eventsLogged = data.eventsLogged;
 
-  setInterval(() => {
-    fetchUniqueIPs().then((ret) => (uniqueIPs = ret));
-    fetchEventsLogged().then((ret) => (eventsLogged = ret));
-  }, 5000);
+  onMount(() => {
+    // Refresh the data on the client every 5s
+    setInterval(() => {
+      fetchUniqueIPs().then((ret) => (uniqueIPs = ret));
+      fetchEventsLogged().then((ret) => (eventsLogged = ret));
+    }, 5000);
+  });
 </script>
 
 <div id="app-grid" class="grid">

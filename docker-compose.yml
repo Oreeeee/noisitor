@@ -4,7 +4,13 @@ services:
   www:
     build: ./noisitor-www
     ports:
-      - 8000:${WEB_PORT}
+      - ${WEB_PORT}:8080
+
+  frontend:
+    build: ./noisitor-frontend
+
+  backend:
+    build: ./noisitor-backend
     environment:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -30,7 +36,7 @@ services:
     volumes:
       - ./db:/data/db
     ports:
-      - 27017:${DB_PORT}
+      - ${DB_PORT}:27017
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}

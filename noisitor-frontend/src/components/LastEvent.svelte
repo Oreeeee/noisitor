@@ -18,4 +18,10 @@
       <p>Time: {eventData.time}</p>
     </hgroup>
   </div>
+  <div>
+    <button class="event-action-button">More info</button>
+    <a href="https://abuseipdb.com/check/{eventData.ip}" target="_blank"
+      ><button class="event-action-button secondary">AbuseIPDB</button></a
+    >
+  </div>
 </div>

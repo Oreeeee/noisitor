@@ -16,3 +16,7 @@
   overflow: auto;
   height: 70vh;
 }
+
+.event-action-button {
+  width: 100%;
+}

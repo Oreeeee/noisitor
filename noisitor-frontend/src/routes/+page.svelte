@@ -7,6 +7,7 @@
   } from "$lib/fetchStats";
   import { onMount } from "svelte";
   import LastEvent from "../components/LastEvent.svelte";
+  import Stats from "../components/Stats.svelte";
 
   // Initial data fetch on server
   var uniqueIPs = data.uniqueIPs;
@@ -25,12 +26,9 @@
 
 <div id="app-grid" class="grid">
   <div id="left-column" class="pico">
-    <p>Unique IPs logged:</p>
-    <h1>{uniqueIPs}</h1>
-    <br />
-    <p>Events logged:</p>
-    <h1>{eventsLogged}</h1>
-    <br />
+    <h3>Statistics:</h3>
+    <hr />
+    <Stats {uniqueIPs} {eventsLogged} />
   </div>
 
   <div id="middle-column">
@@ -38,7 +36,8 @@
   </div>
 
   <div id="right-column" class="pico">
-    <p>Last 50 events:</p>
+    <h3>Last 50 events:</h3>
+    <hr />
     <div id="last-events-container">
       {#each lastEvents as event, i}
         {#if i > 0}

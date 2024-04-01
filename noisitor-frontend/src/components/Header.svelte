@@ -17,7 +17,7 @@
       const h = Math.floor((uptime % (3600 * 24)) / 3600);
       const m = Math.floor((uptime % 3600) / 60);
       const s = Math.floor(uptime % 60);
-      uptimeHR = `${d} days, ${h} hours, ${m} minutes and ${s} seconds`;
+      uptimeHR = `${d}d:${h}h:${m}m:${s}s`;
     }, 1000);
   });
 </script>

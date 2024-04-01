@@ -4,10 +4,15 @@
 
 #header {
   text-align: center;
-  width: 100%;
+  width: 100% - 20px;
   margin: 20px;
 }
 
 #ip-map {
   height: 400px;
+}
+
+#last-events-container {
+  overflow: auto;
+  height: 70vh;
 }

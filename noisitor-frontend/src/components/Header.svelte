@@ -23,6 +23,8 @@
 </script>
 
 <div id="header" class="pico">
-  <h1>Noisitor</h1>
-  <h6>Uptime: {uptimeHR}</h6>
+  <hgroup>
+    <h1>Noisitor</h1>
+    <h6>Uptime: {uptimeHR}</h6>
+  </hgroup>
 </div>

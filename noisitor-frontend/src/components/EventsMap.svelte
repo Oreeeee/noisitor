@@ -16,6 +16,7 @@
     }).addTo(ipMap);
 
     // Fetch markers and add to map
+    // TODO: Make this update every x seconds
     var ipMapMarkers = L.markerClusterGroup();
     const res = await fetch("/data/map");
     const markerList = await res.json();

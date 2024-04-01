@@ -6,5 +6,6 @@
 
 <main>
   <Header />
+  <hr />
   <slot />
 </main>

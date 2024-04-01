@@ -1,5 +1,4 @@
 from litestar import Litestar, get
-import json
 import motor.motor_asyncio
 import traceback
 import time
@@ -34,12 +33,11 @@ async def get_uptime() -> str:
 
 
 @get("/data/map")
-async def get_map() -> str:
-    points: list[str] = []
+async def get_map() -> dict:
+    points = []
     async for point in geolocation_col.find():
-        print("point")
-        points.append(point["lat"] + "|" + point["long"])
-    return "\n".join(points)
+        points.append({"lat": point["lat"], "long": point["long"]})
+    return points
 
 
 # Connecting to DB stuff

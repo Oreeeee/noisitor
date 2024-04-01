@@ -1,13 +1,13 @@
 <script>
+  export let data;
   import { fetchUniqueIPs, fetchEventsLogged } from "$lib/fetchStats";
-  var uniqueIPs = 0;
-  var eventsLogged = 0;
+
+  var uniqueIPs = data.uniqueIPs;
+  var eventsLogged = data.eventsLogged;
 
   setInterval(() => {
-    fetchUniqueIPs()
-      .then(ret => uniqueIPs = ret)
-    fetchEventsLogged()
-      .then(ret => eventsLogged = ret)
+    fetchUniqueIPs().then((ret) => (uniqueIPs = ret));
+    fetchEventsLogged().then((ret) => (eventsLogged = ret));
   }, 5000);
 </script>
 

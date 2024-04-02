@@ -1,4 +1,4 @@
-name: noisitor
+version: "3"
 
 services:
   www:

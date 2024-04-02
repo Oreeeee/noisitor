@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import KeepAliveTester from "./KeepAliveTester.svelte";
 
   var uptime = 0;
   var uptimeHR = "";
@@ -27,4 +28,5 @@
     <a href="/" style="text-decoration:none"><h1>Noisitor</h1></a>
     <h6>Uptime: {uptimeHR}</h6>
   </hgroup>
+  <KeepAliveTester />
 </div>

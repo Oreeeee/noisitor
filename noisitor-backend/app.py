@@ -69,6 +69,11 @@ async def get_ip_events(ip: str) -> dict:
     return event_list
 
 
+@get("/data/keepalive")
+async def keepalive() -> None:
+    return
+
+
 # Connecting to DB stuff
 dbc = motor.motor_asyncio.AsyncIOMotorClient(
     "db", 27017, username=os.environ["DB_USERNAME"], password=os.environ["DB_PASSWORD"]
@@ -88,6 +93,7 @@ app = Litestar(
         get_map,
         get_ip_geolocation,
         get_ip_events,
+        keepalive,
     ],
     exception_handlers={Exception: lambda r, e: traceback.format_exc()},
 )

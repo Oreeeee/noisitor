@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   var uptime = 0;
-  var uptimeHR;
+  var uptimeHR = "";
   var startedTime = 0;
 
   onMount(() => {

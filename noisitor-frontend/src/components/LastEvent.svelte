@@ -1,6 +1,7 @@
 <script>
   export let eventData;
   import { twoLetterCodeToFlag } from "$lib/getCountryFlags";
+  import { formatUnixSecs } from "$lib/dateFormatter";
 </script>
 
 <div class="last-event grid">
@@ -12,10 +13,10 @@
   </div>
   <div>
     <hgroup>
-      <h3>{eventData.ip}</h3>
-      <h5>Country: {eventData.locationData.country_long}</h5>
+      <h5>{eventData.ip}</h5>
+      <p>{eventData.locationData.country_long}</p>
       <p>Port: {eventData.port}</p>
-      <p>Time: {eventData.time}</p>
+      <p>Time: {formatUnixSecs(eventData.time)}</p>
     </hgroup>
   </div>
   <div>

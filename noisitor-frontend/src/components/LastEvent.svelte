@@ -6,10 +6,14 @@
 
 <div class="last-event grid">
   <div>
-    <img
-      src={twoLetterCodeToFlag(eventData.locationData.country_short)}
-      alt="Country flag"
-    />
+    {#if !(eventData.locationData.country_long == "-" && eventData.locationData.country_short == "-")}
+      <img
+        src={twoLetterCodeToFlag(eventData.locationData.country_short)}
+        alt="{eventData.locationData.country_long} flag"
+      />
+    {:else}
+      <img src="/unknown_flag.svg" alt="Unknown country flag" />
+    {/if}
   </div>
   <div>
     <hgroup>

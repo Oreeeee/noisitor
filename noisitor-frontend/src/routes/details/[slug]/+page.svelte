@@ -39,7 +39,7 @@
     {#if showingScreen == "ipInfo"}
       <IpInfo ip={data.ip} geolocation={data.geolocation} />
     {:else if showingScreen == "pastEvents"}
-      <PastEvents eventList />
+      <PastEvents eventList={data.eventList} />
     {/if}
   {/if}
 </div>

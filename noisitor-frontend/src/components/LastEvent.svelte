@@ -24,7 +24,7 @@
     </hgroup>
   </div>
   <div>
-    <a href="/details/{eventData.ip}" target="_blank">
+    <a href="/details/{eventData.ip}">
       <button class="event-action-button">More info</button>
     </a>
     <a href="https://abuseipdb.com/check/{eventData.ip}" target="_blank"

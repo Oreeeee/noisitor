@@ -24,7 +24,7 @@ async def last_events() -> dict:
             loc.pop("_id")
         else:
             loc = {
-                "ip": "51.174.63.84",
+                "ip": "-",
                 "lat": "-",
                 "long": "-",
                 "country_long": "-",

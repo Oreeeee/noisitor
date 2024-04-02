@@ -52,6 +52,23 @@ async def get_map() -> dict:
     return points
 
 
+@get("/data/ip/{ip:str}/geolocation/")
+async def get_ip_geolocation(ip: str) -> dict:
+    loc = await geolocation_col.find_one({"ip": ip})
+    if loc != None:
+        loc.pop("_id")
+    return loc
+
+
+@get("/data/ip/{ip:str}/event-list/")
+async def get_ip_events(ip: str) -> dict:
+    event_list = []
+    async for event in events_col.find({"ip": ip}).sort("_id", -1):
+        event.pop("_id")
+        event_list.append(event)
+    return event_list
+
+
 # Connecting to DB stuff
 dbc = motor.motor_asyncio.AsyncIOMotorClient(
     "db", 27017, username=os.environ["DB_USERNAME"], password=os.environ["DB_PASSWORD"]
@@ -69,6 +86,8 @@ app = Litestar(
         last_events,
         get_uptime,
         get_map,
+        get_ip_geolocation,
+        get_ip_events,
     ],
     exception_handlers={Exception: lambda r, e: traceback.format_exc()},
 )

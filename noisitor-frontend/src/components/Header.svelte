@@ -24,7 +24,7 @@
 
 <div id="header" class="pico">
   <hgroup>
-    <h1>Noisitor</h1>
+    <a href="/" style="text-decoration:none"><h1>Noisitor</h1></a>
     <h6>Uptime: {uptimeHR}</h6>
   </hgroup>
 </div>

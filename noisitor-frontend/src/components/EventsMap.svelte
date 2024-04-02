@@ -27,4 +27,4 @@
   });
 </script>
 
-<div id="ip-map"></div>
+<div id="ip-map" class="map"></div>

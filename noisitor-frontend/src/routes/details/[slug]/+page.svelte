@@ -3,7 +3,7 @@
   // TODO: Check did an IP make an event, if not, show an appropiate message
   import IpInfo from "../../../components/IPInfo.svelte";
   import PastEvents from "../../../components/PastEvents.svelte";
-  console.log(data.eventList);
+
   var showingScreen = "ipInfo";
   function setScreen(screen) {
     showingScreen = screen;
@@ -37,7 +37,7 @@
     </div>
     <br />
     {#if showingScreen == "ipInfo"}
-      <IpInfo ip />
+      <IpInfo ip={data.ip} geolocation={data.geolocation} />
     {:else if showingScreen == "pastEvents"}
       <PastEvents eventList />
     {/if}

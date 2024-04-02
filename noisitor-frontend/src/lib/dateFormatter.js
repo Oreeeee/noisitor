@@ -2,8 +2,8 @@ export function formatUnixSecs(date) {
   const jsDate = new Date(date * 1000);
 
   const year = singleDigitToZeroPrefix(jsDate.getFullYear());
-  const month = singleDigitToZeroPrefix(jsDate.getMonth());
-  const day = singleDigitToZeroPrefix(jsDate.getDay());
+  const month = singleDigitToZeroPrefix(jsDate.getMonth() + 1);
+  const day = singleDigitToZeroPrefix(jsDate.getDate());
 
   const hour = singleDigitToZeroPrefix(jsDate.getHours());
   const minute = singleDigitToZeroPrefix(jsDate.getMinutes());

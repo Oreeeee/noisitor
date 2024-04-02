@@ -25,7 +25,7 @@
   });
 </script>
 
-<div id="app-grid" class="grid">
+<div class="site-contents grid">
   <div id="left-column" class="pico">
     <h3>Statistics:</h3>
     <hr />

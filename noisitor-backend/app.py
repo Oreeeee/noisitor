@@ -20,8 +20,20 @@ async def last_events() -> dict:
     event_list = []
     async for event in events_col.find(limit=50).sort("_id", -1):
         loc = await geolocation_col.find_one({"ip": event["ip"]})
+        if loc != None:
+            loc.pop("_id")
+        else:
+            loc = {
+                "ip": "51.174.63.84",
+                "lat": "-",
+                "long": "-",
+                "country_long": "-",
+                "country_short": "-",
+                "city": "-",
+                "zip": "-",
+                "tz": "-",
+            }
         event.pop("_id")
-        loc.pop("_id")
         event["locationData"] = loc
         event_list.append(event)
     return event_list

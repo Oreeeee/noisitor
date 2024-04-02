@@ -5,7 +5,7 @@
   import { onMount } from "svelte";
 
   onMount(async () => {
-    const L = (await import("./leafletAndCluster")).leafletAndCluster();
+    const L = (await import("../lib/leafletAndCluster")).leafletAndCluster();
 
     // Init map
     var ipMap = L.map("ip-map").setView([0.0, 0.0], 0);

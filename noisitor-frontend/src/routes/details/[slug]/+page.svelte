@@ -1,5 +1,6 @@
 <script>
   export let data;
+  // TODO: Check did an IP make an event, if not, show an appropiate message
   import IpInfo from "../../../components/IPInfo.svelte";
   import PastEvents from "../../../components/PastEvents.svelte";
 

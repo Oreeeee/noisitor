@@ -25,10 +25,10 @@
   </div>
   <div>
     <a href="/details/{eventData.ip}">
-      <button class="event-action-button">More info</button>
-    </a>
+      <button class="wide-button">More info</button>
+    </a><br /><br />
     <a href="https://abuseipdb.com/check/{eventData.ip}" target="_blank"
-      ><button class="event-action-button secondary">AbuseIPDB</button></a
+      ><button class="wide-button secondary">AbuseIPDB</button></a
     >
   </div>
 </div>

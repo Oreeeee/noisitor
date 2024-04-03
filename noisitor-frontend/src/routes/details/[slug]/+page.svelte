@@ -1,5 +1,6 @@
 <script>
   export let data;
+  import AbuseIpdbButton from "../../../components/AbuseIPDBButton.svelte";
   // TODO: Check did an IP make an event, if not, show an appropiate message
   import IpInfo from "../../../components/IPInfo.svelte";
   import PastEvents from "../../../components/PastEvents.svelte";
@@ -34,6 +35,7 @@
           setScreen("pastEvents");
         }}>Past events</button
       >
+      <AbuseIpdbButton ip={data.ip} wide={true} />
     </div>
     <br />
     {#if showingScreen == "ipInfo"}

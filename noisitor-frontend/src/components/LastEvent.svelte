@@ -2,6 +2,8 @@
   export let eventData;
   import { twoLetterCodeToFlag } from "$lib/getCountryFlags";
   import { formatUnixSecs } from "$lib/dateFormatter";
+  import MoreInfoButton from "./MoreInfoButton.svelte";
+  import AbuseIpdbButton from "./AbuseIPDBButton.svelte";
 </script>
 
 <div class="last-event grid">
@@ -24,11 +26,7 @@
     </hgroup>
   </div>
   <div>
-    <a href="/details/{eventData.ip}">
-      <button class="wide-button">More info</button>
-    </a><br /><br />
-    <a href="https://abuseipdb.com/check/{eventData.ip}" target="_blank"
-      ><button class="wide-button secondary">AbuseIPDB</button></a
-    >
+    <MoreInfoButton ip={eventData.ip} wide={true} /><br><br>
+    <AbuseIpdbButton ip={eventData.ip} wide={true} />
   </div>
 </div>

@@ -30,12 +30,12 @@
     <h3>Statistics:</h3>
     <hr />
     <Stats {uniqueIPs} {eventsLogged} />
+    <!--
     <div>
-      <!--
       <button class="wide-button">Search the database</button><br /><br />
-      -->
       <button class="wide-button contrast">More statistics</button>
     </div>
+    -->
   </div>
 
   <div id="middle-column">

@@ -7,8 +7,8 @@
   <h2>Total events: {eventList.length}</h2>
   <table>
     <tr>
-      <th>Time</th>
-      <th>Port</th>
+      <th><strong>Time</strong></th>
+      <th><strong>Port</strong></th>
     </tr>
     {#each eventList as event}
       <tr>

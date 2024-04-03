@@ -5,6 +5,24 @@ import time
 import os
 
 
+async def find_geolocation(ip: str) -> dict:
+    loc = await geolocation_col.find_one({"ip": ip})
+    if loc != None:
+        loc.pop("_id")
+    else:
+        loc = {
+            "ip": "-",
+            "lat": "-",
+            "long": "-",
+            "country_long": "-",
+            "country_short": "-",
+            "city": "-",
+            "zip": "-",
+            "tz": "-",
+        }
+    return loc
+
+
 @get("/data/unique-ips")
 async def unique_ips() -> str:
     return str(len(await events_col.distinct("ip")))
@@ -19,20 +37,7 @@ async def total_events() -> str:
 async def last_events() -> dict:
     event_list = []
     async for event in events_col.find(limit=50).sort("_id", -1):
-        loc = await geolocation_col.find_one({"ip": event["ip"]})
-        if loc != None:
-            loc.pop("_id")
-        else:
-            loc = {
-                "ip": "-",
-                "lat": "-",
-                "long": "-",
-                "country_long": "-",
-                "country_short": "-",
-                "city": "-",
-                "zip": "-",
-                "tz": "-",
-            }
+        loc = await find_geolocation(event["ip"])
         event.pop("_id")
         event["locationData"] = loc
         event_list.append(event)
@@ -54,10 +59,7 @@ async def get_map() -> dict:
 
 @get("/data/ip/{ip:str}/geolocation/")
 async def get_ip_geolocation(ip: str) -> dict:
-    loc = await geolocation_col.find_one({"ip": ip})
-    if loc != None:
-        loc.pop("_id")
-    return loc
+    return await find_geolocation(ip)
 
 
 @get("/data/ip/{ip:str}/event-list/")

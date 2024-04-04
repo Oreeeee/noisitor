@@ -34,3 +34,15 @@ export async function fetchLastEvents(server = false) {
   const ret = await res.json();
   return ret;
 }
+
+export async function fetchEvents(server = false, count) {
+  let endpoint;
+  if (server) {
+    endpoint = `http://backend:8000/data/events/${count}`;
+  } else {
+    endpoint = `/data/events/${count}`;
+  }
+  const res = await fetch(endpoint);
+  const ret = await res.json();
+  return ret;
+}

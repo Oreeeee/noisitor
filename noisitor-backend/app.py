@@ -70,6 +70,14 @@ async def get_ip_events(ip: str) -> dict:
         event_list.append(event)
     return event_list
 
+@get("/data/events/{count:int}")
+async def get_events(count: int) -> dict:
+    event_list = []
+    async for event in events_col.find(limit=count).sort("_id", -1):
+        event.pop("_id")
+        event_list.append(event)
+    return event_list
+
 
 @get("/data/keepalive")
 async def keepalive() -> None:
@@ -95,6 +103,7 @@ app = Litestar(
         get_map,
         get_ip_geolocation,
         get_ip_events,
+        get_events,
         keepalive,
     ],
     exception_handlers={Exception: lambda r, e: traceback.format_exc()},

@@ -1,13 +1,20 @@
 import psycopg
 from datetime import datetime
+from dataclasses import dataclass
 import logging
 
 
-def get_connection(
-    port: int, password: str, host: str = "postgres-db"
-) -> psycopg.Connection:
-    # TODO: Replace host to db in the future
-    return psycopg.connect(f"host={host} port={port} user=noisitor password={password}")
+@dataclass
+class DBConn:
+    port: int
+    password: str
+    host: str = "postgres-db"  # TODO: Replace host to db in the future
+
+
+def get_connection(dbconn: DBConn) -> psycopg.Connection:
+    return psycopg.connect(
+        f"host={dbconn.host} port={dbconn.port} user=noisitor password={dbconn.password}"
+    )
 
 
 def insert_event(conn: psycopg.Connection, ip: str, port: int) -> None:
@@ -16,7 +23,6 @@ def insert_event(conn: psycopg.Connection, ip: str, port: int) -> None:
             "INSERT INTO event (ip, port, protocol, dt) VALUES (%s, %s, %s, %s)",
             (ip, port, 6, datetime.now()),
         )
-        conn.commit()
 
 
 def insert_geolocation(conn: psycopg.Connection, loc: dict[str, str]) -> None:
@@ -39,4 +45,3 @@ def insert_geolocation(conn: psycopg.Connection, loc: dict[str, str]) -> None:
         except psycopg.errors.UniqueViolation:
             ip = loc["ip"]
             logging.debug(f"Location for {ip} already exists in the table")
-        conn.commit()

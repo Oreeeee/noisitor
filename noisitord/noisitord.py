@@ -79,20 +79,23 @@ def main() -> None:
     logger.debug("Starting sniffing loop")
     for packet in sniffer():
         logger.debug("Packet just received")
-        logger.debug("Adding the packet info to the DB")
-        db.insert_event(db_conn, packet.ip.src, packet.tcp.dstport)
-        # Save geolocation
-        if ip2loc_db != None:
-            logger.debug("Getting geolocation data")
-            db.insert_geolocation(db_conn, ip2loc_db.get_all(packet.ip.src))
-        logger.info(
-            f"An event just happenned: {packet_nst.ip}, {packet_nst.port}, {packet_nst.protocol}, {packet_nst.time}",
-        )
+        with db.get_connection(db_cred) as conn:
+            logger.debug("Adding the packet info to the DB")
+            db.insert_event(conn, packet.ip.src, packet.tcp.dstport)
+            # Save geolocation
+            if ip2loc_db != None:
+                logger.debug("Getting geolocation data")
+                db.insert_geolocation(conn, ip2loc_db.get_all(packet.ip.src))
+            logger.info(
+                f"An event just happenned: {packet_nst.ip}, {packet_nst.port}, {packet_nst.protocol}, {packet_nst.time}",
+            )
 
 
 if __name__ == "__main__":
     load_config()
-    db_conn = db.get_connection(NoisitordConfig.db_port, NoisitordConfig.db_password)
+    db_cred = db.DBConn(
+        NoisitordConfig.db_port, NoisitordConfig.db_password, "localhost"
+    )  # We have to use localhost as hostname because we are exposed to the host network
 
     # Initialize logger
     if NoisitordConfig.debug:

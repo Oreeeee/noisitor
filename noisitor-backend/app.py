@@ -1,47 +1,20 @@
 from litestar import Litestar, get
-import motor.motor_asyncio
+from dataclasses import asdict
 import traceback
 import time
 import os
+import db
 
 
-async def find_geolocation(ip: str) -> dict:
-    loc = await geolocation_col.find_one({"ip": ip})
-    if loc != None:
-        loc.pop("_id")
-    else:
-        loc = {
-            "ip": "-",
-            "lat": "-",
-            "long": "-",
-            "country_long": "-",
-            "country_short": "-",
-            "city": "-",
-            "zip": "-",
-            "tz": "-",
-        }
-    return loc
-
-
-@get("/data/unique-ips")
-async def unique_ips() -> str:
-    return str(len(await events_col.distinct("ip")))
-
-
-@get("/data/total-events")
-async def total_events() -> str:
-    return str(await events_col.count_documents({}))
-
-
-@get("/data/last-events")
-async def last_events() -> dict:
-    event_list = []
-    async for event in events_col.find(limit=50).sort("_id", -1):
-        loc = await find_geolocation(event["ip"])
-        event.pop("_id")
-        event["locationData"] = loc
-        event_list.append(event)
-    return event_list
+@get("/data/stats.json")
+async def get_stats() -> dict[str, int]:
+    with db.get_connection(db_cred) as conn:
+        total_count: int = db.get_event_count(conn)
+        unique_count: int = db.get_unique_event_count(conn)
+        last_events: list[db.EventLocationJoin] = db.get_last_n_events_and_join_loc(
+            conn, 50
+        )
+    return {"total": total_count, "unique": unique_count, "last": asdict(last_events)}
 
 
 @get("/data/started-time")
@@ -51,31 +24,29 @@ async def get_uptime() -> str:
 
 @get("/data/map")
 async def get_map() -> dict:
-    points = []
-    async for point in geolocation_col.find():
-        points.append({"lat": point["lat"], "long": point["long"]})
+    with db.get_connection(db_cred) as conn:
+        points = db.get_geolocation_all(conn)
     return points
 
 
 @get("/data/ip/{ip:str}/geolocation/")
 async def get_ip_geolocation(ip: str) -> dict:
-    return await find_geolocation(ip)
+    with db.get_connection(db_cred) as conn:
+        loc = db.get_geolocation_for_ip(conn, ip)
+    return loc
 
 
 @get("/data/ip/{ip:str}/event-list/")
 async def get_ip_events(ip: str) -> dict:
-    event_list = []
-    async for event in events_col.find({"ip": ip}).sort("_id", -1):
-        event.pop("_id")
-        event_list.append(event)
+    with db.get_connection(db_cred) as conn:
+        event_list = db.get_events_for_ip(conn, ip)
     return event_list
+
 
 @get("/data/events/{count:int}")
 async def get_events(count: int) -> dict:
-    event_list = []
-    async for event in events_col.find(limit=count).sort("_id", -1):
-        event.pop("_id")
-        event_list.append(event)
+    with db.get_connection(db_cred) as conn:
+        event_list = db.get_last_n_events(count)
     return event_list
 
 
@@ -84,21 +55,12 @@ async def keepalive() -> None:
     return
 
 
-# Connecting to DB stuff
-dbc = motor.motor_asyncio.AsyncIOMotorClient(
-    "db", 27017, username=os.environ["DB_USERNAME"], password=os.environ["DB_PASSWORD"]
-)
-noisitor_db = dbc["noisitor"]
-events_col = noisitor_db["events"]
-geolocation_col = noisitor_db["geolocation"]
-
+db_cred = db.DBConn(os.environ["DB_PORT"], os.environ["DB_PASSWORD"])
 STARTED_TIME = str(int(time.time()))
 
 app = Litestar(
     route_handlers=[
-        unique_ips,
-        total_events,
-        last_events,
+        get_stats,
         get_uptime,
         get_map,
         get_ip_geolocation,

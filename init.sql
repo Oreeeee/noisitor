@@ -14,5 +14,5 @@ CREATE TABLE event (
     id SERIAL PRIMARY KEY,
     ip VARCHAR(255),
     port INT,
-    dt INT
+    dt TIME
 );

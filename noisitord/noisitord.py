@@ -87,7 +87,7 @@ def main() -> None:
                 logger.debug("Getting geolocation data")
                 db.insert_geolocation(conn, ip2loc_db.get_all(packet.ip.src))
             logger.info(
-                f"An event just happenned: {packet_nst.ip}, {packet_nst.port}, {packet_nst.protocol}, {packet_nst.time}",
+                f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
             )
 
 

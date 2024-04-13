@@ -1,3 +1,4 @@
+# TODO: Make async
 import psycopg
 from psycopg.rows import class_row
 from datetime import datetime
@@ -42,7 +43,6 @@ class EventLocationJoin:
     port: int
     protocol: int
     dt: datetime.time
-    ip_: str
     lat: float
     long: float
     country_long: str

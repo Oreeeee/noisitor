@@ -1,3 +1,4 @@
 pyshark==0.6
 pymongo==4.6.2
 IP2Location==8.10.2
+psycopg==3.1.18

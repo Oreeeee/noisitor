@@ -1,11 +1,8 @@
 import pyshark
-from dataclasses import dataclass, asdict
 import os
-import time
-import sys
-import pymongo
 import IP2Location
 import logging
+import db
 
 
 class NoisitordConfig:
@@ -15,14 +12,6 @@ class NoisitordConfig:
     db_password: str
     db_port: int
     debug: bool
-
-
-@dataclass
-class NoisitordEvent:
-    ip: str
-    port: int
-    protocol: str
-    time: str
 
 
 def load_config() -> None:
@@ -50,36 +39,6 @@ def create_filter() -> str:
     return " ".join(args)
 
 
-def db_load() -> any:
-    logger.debug("Connecting to database")
-    dbc = pymongo.MongoClient(
-        host="127.0.0.1",
-        port=NoisitordConfig.db_port,
-        username=NoisitordConfig.db_username,
-        password=NoisitordConfig.db_password,
-    )
-    noisitor_db = dbc["noisitor"]  # Noisitor database
-    events_col = noisitor_db["events"]  # Event collection in Noisitor DB
-    geolocation_col = noisitor_db["geolocation"]
-    return events_col, geolocation_col
-
-
-def get_geolocation(ip2loc_db: IP2Location.IP2Location, ip: str) -> dict[str, str]:
-    rec = ip2loc_db.get_all(ip)
-    loc = {
-        "ip": ip,
-        "lat": rec.latitude,
-        "long": rec.longitude,
-        "country_long": rec.country_long,
-        "country_short": rec.country_short,
-        "city": rec.city,
-        "zip": rec.zipcode,
-        "tz": rec.timezone,
-    }
-    logger.debug(f"Location data: {loc}")
-    return loc
-
-
 def fake_ip_generator():
     import random
     import time
@@ -98,8 +57,6 @@ def fake_ip_generator():
 
 
 def main() -> None:
-    events_col, geolocation_col = db_load()
-
     # IP2Location initialisation
     logger.debug("Checking for IP2Location DB presence")
     if os.path.isfile("/ip2location/IPDB.BIN"):
@@ -122,19 +79,12 @@ def main() -> None:
     logger.debug("Starting sniffing loop")
     for packet in sniffer():
         logger.debug("Packet just received")
-        packet_nst = NoisitordEvent(
-            packet.ip.src, packet.tcp.dstport, "tcp", int(time.time())
-        )
         logger.debug("Adding the packet info to the DB")
-        events_col.insert_one(asdict(packet_nst))
+        db.insert_event(db_conn, packet.ip.src, packet.tcp.dstport)
         # Save geolocation
         if ip2loc_db != None:
             logger.debug("Getting geolocation data")
-            geolocation_col.replace_one(
-                {"ip": packet_nst.ip},
-                get_geolocation(ip2loc_db, packet_nst.ip),
-                upsert=True,
-            )
+            db.insert_geolocation(db_conn, ip2loc_db.get_all(packet.ip.src))
         logger.info(
             f"An event just happenned: {packet_nst.ip}, {packet_nst.port}, {packet_nst.protocol}, {packet_nst.time}",
         )
@@ -142,6 +92,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     load_config()
+    db_conn = db.get_connection(NoisitordConfig.db_port, NoisitordConfig.db_password)
 
     # Initialize logger
     if NoisitordConfig.debug:

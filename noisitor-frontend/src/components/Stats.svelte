@@ -3,10 +3,10 @@
 </script>
 
 <div>
-  <p>Unique IPs logged:</p>
-  <h1>{stats.unique}</h1>
+  Unique IPs logged:
+  <h2>{stats.unique}</h2>
   <br />
-  <p>Events logged:</p>
-  <h1>{stats.total}</h1>
+  Events logged:
+  <h2>{stats.total}</h2>
   <br />
 </div>

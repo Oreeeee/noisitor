@@ -1,5 +1,5 @@
 <script>
-  var alive = true;
+  let alive = true;
 
   import { onMount } from "svelte";
 

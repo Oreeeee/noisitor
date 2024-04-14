@@ -5,7 +5,7 @@
   import IpInfo from "../../../components/IPInfo.svelte";
   import PastEvents from "../../../components/PastEvents.svelte";
 
-  var showingScreen = "ipInfo";
+  let showingScreen = "ipInfo";
   function setScreen(screen) {
     showingScreen = screen;
   }

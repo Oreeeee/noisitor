@@ -13,7 +13,7 @@
   onMount(async () => {
     const L = await import("leaflet");
 
-    var spMap = L.map("single-point-map").setView(coords, 13);
+    let spMap = L.map("single-point-map").setView(coords, 13);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution:

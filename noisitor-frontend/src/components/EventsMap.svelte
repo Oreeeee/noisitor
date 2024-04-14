@@ -8,7 +8,7 @@
     const L = (await import("../lib/leafletAndCluster")).leafletAndCluster();
 
     // Init map
-    var ipMap = L.map("ip-map").setView([0.0, 0.0], 0);
+    let ipMap = L.map("ip-map").setView([0.0, 0.0], 0);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution:
@@ -17,7 +17,7 @@
 
     // Fetch markers and add to map
     // TODO: Make this update every x seconds
-    var ipMapMarkers = L.markerClusterGroup();
+    let ipMapMarkers = L.markerClusterGroup();
     const res = await fetch("/data/map");
     const markerList = await res.json();
     markerList.forEach((m) => {

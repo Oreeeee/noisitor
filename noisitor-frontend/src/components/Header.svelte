@@ -2,9 +2,9 @@
   import { onMount } from "svelte";
   import KeepAliveTester from "./KeepAliveTester.svelte";
 
-  var uptime = 0;
-  var uptimeHR = "";
-  var startedTime = 0;
+  let uptime = 0;
+  let uptimeHR = "";
+  let startedTime = 0;
 
   onMount(() => {
     fetch("/data/started-time")

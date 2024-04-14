@@ -1,20 +1,24 @@
 <script>
   export let data;
   import { fetchStats } from "$lib/fetchStats";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import LastEvent from "../components/LastEvent.svelte";
   import Stats from "../components/Stats.svelte";
   import EventsMap from "../components/EventsMap.svelte";
 
   // Initial data fetch on server
   let stats = data.stats;
+  let updateInterval;
 
-  // TODO: Fix mounts and unmounts to stop memory leaks
   onMount(() => {
     // Refresh the data on the client every 5s
-    setInterval(() => {
+    updateInterval = setInterval(() => {
       fetchStats().then((ret) => (stats = ret));
     }, 5000);
+  });
+
+  onDestroy(() => {
+    clearInterval(updateInterval);
   });
 </script>
 

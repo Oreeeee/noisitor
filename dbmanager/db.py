@@ -1,6 +1,6 @@
 # TODO: Make async
 import psycopg
-from psycopg.rows import class_row
+from psycopg.rows import class_row, dict_row
 from dataclasses import dataclass
 import logging
 import time
@@ -160,3 +160,28 @@ def get_events_for_ip(conn: psycopg.Connection, ip: str) -> list[Event]:
         ).fetchall()
 
     return events
+
+
+def get_tops(conn: psycopg.Connection) -> dict[str, list[dict[str, int]]]:
+    with conn.cursor(row_factory=dict_row) as cur:
+        top_ports: list[dict[str, int]] = cur.execute(
+            """
+            SELECT
+            DISTINCT port, COUNT(port)
+            FROM event
+            GROUP BY port
+            ORDER BY count DESC;
+        """
+        ).fetchall()
+
+        top_countries: list[dict[str, int]] = cur.execute(
+            """
+            SELECT
+            DISTINCT country_long, COUNT(country_long)
+            FROM location
+            GROUP BY country_long
+            ORDER BY count DESC;
+        """
+        ).fetchall()
+
+    return {"ports": top_ports, "countries": top_countries}

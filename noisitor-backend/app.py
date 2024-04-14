@@ -50,6 +50,13 @@ async def get_events(count: int) -> dict:
     return event_list
 
 
+@get("/data/tops")
+async def get_tops() -> dict:
+    with db.get_connection(db_cred) as conn:
+        tops = db.get_tops(conn)
+    return tops
+
+
 @get("/data/keepalive")
 async def keepalive() -> None:
     return
@@ -66,6 +73,7 @@ app = Litestar(
         get_ip_geolocation,
         get_ip_events,
         get_events,
+        get_tops,
         keepalive,
     ],
     exception_handlers={Exception: lambda r, e: traceback.format_exc()},

@@ -25,6 +25,11 @@
       <th><strong>IP</strong></th>
       <th><strong>Port</strong></th>
       <th><strong>Time</strong></th>
+      <th><strong>Latitude</strong></th>
+      <th><strong>Longitude</strong></th>
+      <th><strong>Country</strong></th>
+      <th><strong>Region</strong></th>
+      <th><strong>City</strong></th>
       <th><strong>More info</strong></th>
     </tr>
     {#each events as event}
@@ -32,6 +37,11 @@
         <td>{event.ip}</td>
         <td>{event.port}</td>
         <td>{formatUnixSecs(event.dt)}</td>
+        <td>{event.lat}</td>
+        <td>{event.long}</td>
+        <td>{event.country_long}</td>
+        <td>{event.region}</td>
+        <td>{event.city}</td>
         <td><MoreInfoButton ip={event.ip} /></td>
       </tr>
     {/each}

@@ -46,7 +46,7 @@ async def get_ip_events(ip: str) -> dict:
 @get("/data/events/{count:int}")
 async def get_events(count: int) -> dict:
     with db.get_connection(db_cred) as conn:
-        event_list = db.get_last_n_events(conn, count)
+        event_list = db.get_last_n_events_and_join_loc(conn, count)
     return event_list
 
 

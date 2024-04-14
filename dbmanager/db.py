@@ -60,7 +60,7 @@ def get_connection(dbconn: DBConn) -> psycopg.Connection:
             )
             return conn
         except psycopg.OperationalError:
-            logging.info("Failed to connect to DB")
+            logging.error("Failed to connect to DB")
             time.sleep(0.5)
 
 

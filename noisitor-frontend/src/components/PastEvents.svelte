@@ -12,7 +12,7 @@
     </tr>
     {#each eventList as event}
       <tr>
-        <td>{formatUnixSecs(event.time)}</td>
+        <td>{formatUnixSecs(event.dt)}</td>
         <td>{event.port}</td>
       </tr>
     {/each}

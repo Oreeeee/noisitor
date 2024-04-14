@@ -31,7 +31,7 @@
       <tr>
         <td>{event.ip}</td>
         <td>{event.port}</td>
-        <td>{formatUnixSecs(event.time)}</td>
+        <td>{formatUnixSecs(event.dt)}</td>
         <td><MoreInfoButton ip={event.ip} /></td>
       </tr>
     {/each}

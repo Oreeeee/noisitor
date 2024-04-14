@@ -9,6 +9,7 @@
   // Initial data fetch on server
   let stats = data.stats;
 
+  // TODO: Fix mounts and unmounts to stop memory leaks
   onMount(() => {
     // Refresh the data on the client every 5s
     setInterval(() => {

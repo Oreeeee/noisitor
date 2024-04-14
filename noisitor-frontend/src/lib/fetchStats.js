@@ -1,34 +1,10 @@
 // TODO: Make this fetching better, maybe fetch one JSON file?
-export async function fetchUniqueIPs(server = false) {
+export async function fetchStats(server = false) {
   let endpoint;
   if (server) {
-    endpoint = "http://backend:8000/data/unique-ips";
+    endpoint = "http://backend:8000/data/stats.json";
   } else {
-    endpoint = "/data/unique-ips";
-  }
-  const res = await fetch(endpoint);
-  const ret = await res.text();
-  return ret;
-}
-
-export async function fetchEventsLogged(server = false) {
-  let endpoint;
-  if (server) {
-    endpoint = "http://backend:8000/data/total-events";
-  } else {
-    endpoint = "/data/total-events";
-  }
-  const res = await fetch(endpoint);
-  const ret = await res.text();
-  return ret;
-}
-
-export async function fetchLastEvents(server = false) {
-  let endpoint;
-  if (server) {
-    endpoint = "http://backend:8000/data/last-events";
-  } else {
-    endpoint = "/data/last-events";
+    endpoint = "/data/stats.json";
   }
   const res = await fetch(endpoint);
   const ret = await res.json();

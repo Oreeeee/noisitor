@@ -1,26 +1,18 @@
 <script>
   export let data;
-  import {
-    fetchUniqueIPs,
-    fetchEventsLogged,
-    fetchLastEvents,
-  } from "$lib/fetchStats";
+  import { fetchStats } from "$lib/fetchStats";
   import { onMount } from "svelte";
   import LastEvent from "../components/LastEvent.svelte";
   import Stats from "../components/Stats.svelte";
   import EventsMap from "../components/EventsMap.svelte";
 
   // Initial data fetch on server
-  var uniqueIPs = data.uniqueIPs;
-  var eventsLogged = data.eventsLogged;
-  var lastEvents = data.lastEvents;
+  let stats = data.stats;
 
   onMount(() => {
     // Refresh the data on the client every 5s
     setInterval(() => {
-      fetchUniqueIPs().then((ret) => (uniqueIPs = ret));
-      fetchEventsLogged().then((ret) => (eventsLogged = ret));
-      fetchLastEvents().then((ret) => (lastEvents = ret));
+      fetchStats().then((ret) => (stats = ret));
     }, 5000);
   });
 </script>
@@ -29,16 +21,14 @@
   <div id="left-column" class="pico">
     <h3>Statistics:</h3>
     <hr />
-    <Stats {uniqueIPs} {eventsLogged} />
+    <Stats {stats} />
 
     <div>
       <a href="/show-all"
         ><button class="wide-button">Show all events</button></a
-      >
-      <!--
+      ><br /><br />
       <button class="wide-button">Search the database</button><br /><br />
       <button class="wide-button contrast">More statistics</button>
-      -->
     </div>
   </div>
 
@@ -54,7 +44,7 @@
     <h3>Last 50 events:</h3>
     <hr />
     <div id="last-events-container">
-      {#each lastEvents as event, i}
+      {#each stats.last as event, i}
         {#if i > 0}
           <hr />
         {/if}

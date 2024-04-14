@@ -9,8 +9,8 @@ import logging
 
 @dataclass
 class DBConn:
-    port: int
     password: str
+    port: int = 5432
     host: str = "postgres-db"  # TODO: Replace host to db in the future
 
 

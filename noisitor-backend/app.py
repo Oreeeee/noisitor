@@ -14,7 +14,7 @@ async def get_stats() -> dict[str, int]:
         last_events: list[db.EventLocationJoin] = db.get_last_n_events_and_join_loc(
             conn, 50
         )
-    return {"total": total_count, "unique": unique_count, "last": asdict(last_events)}
+    return {"total": total_count, "unique": unique_count, "last": last_events}
 
 
 @get("/data/started-time")
@@ -55,7 +55,7 @@ async def keepalive() -> None:
     return
 
 
-db_cred = db.DBConn(os.environ["DB_PORT"], os.environ["DB_PASSWORD"])
+db_cred = db.DBConn(os.environ["DB_PASSWORD"])
 STARTED_TIME = str(int(time.time()))
 
 app = Litestar(

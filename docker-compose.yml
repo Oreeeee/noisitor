@@ -33,23 +33,16 @@ services:
     cap_add:
       - NET_ADMIN
 
-  db:
-    image: mongo
-    restart: always
-    volumes:
-      - ./db:/data/db
-    ports:
-      - ${DB_PORT}:27017
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
-
+  # TODO: Change to db
   postgres-db:
     image: postgres:16
     restart: always
     volumes:
       - ./postgres-db:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      # TODO: Change to DB_PORT
+      - 5432:5432
     environment:
       - POSTGRES_USER=noisitor
       - POSTGRES_PASSWORD=${DB_PASSWORD}

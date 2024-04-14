@@ -8,10 +8,10 @@
 
 <div class="last-event grid">
   <div>
-    {#if !(eventData.locationData.country_long == "-" && eventData.locationData.country_short == "-")}
+    {#if !(eventData.country_long == "-" && eventData.country_short == "-")}
       <img
-        src={twoLetterCodeToFlag(eventData.locationData.country_short)}
-        alt="{eventData.locationData.country_long} flag"
+        src={twoLetterCodeToFlag(eventData.country_short)}
+        alt="{eventData.country_long} flag"
       />
     {:else}
       <img src="/unknown_flag.svg" alt="Unknown country flag" />
@@ -20,13 +20,13 @@
   <div>
     <hgroup>
       <h5>{eventData.ip}</h5>
-      <p>{eventData.locationData.country_long}</p>
+      <p>{eventData.country_long}</p>
       <p>Port: {eventData.port}</p>
-      <p>Time: {formatUnixSecs(eventData.time)}</p>
+      <p>Time: {formatUnixSecs(eventData.dt)}</p>
     </hgroup>
   </div>
   <div>
-    <MoreInfoButton ip={eventData.ip} wide={true} /><br><br>
+    <MoreInfoButton ip={eventData.ip} wide={true} /><br /><br />
     <AbuseIpdbButton ip={eventData.ip} wide={true} />
   </div>
 </div>

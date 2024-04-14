@@ -1,10 +1,9 @@
 # TODO: Make async
 import psycopg
 from psycopg.rows import class_row
-from datetime import datetime
 from dataclasses import dataclass
-from datetime import datetime
 import logging
+import time
 
 
 @dataclass
@@ -20,7 +19,7 @@ class Event:
     ip: str
     port: int
     protocol: int
-    dt: datetime.time
+    dt: int
 
 
 @dataclass
@@ -42,7 +41,7 @@ class EventLocationJoin:
     ip: str
     port: int
     protocol: int
-    dt: datetime.time
+    dt: int
     lat: float
     long: float
     country_long: str
@@ -63,7 +62,7 @@ def insert_event(conn: psycopg.Connection, ip: str, port: int) -> None:
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO event (ip, port, protocol, dt) VALUES (%s, %s, %s, %s)",
-            (ip, port, 6, datetime.now()),
+            (ip, port, 6, int(time.time())),
         )
 
 

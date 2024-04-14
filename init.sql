@@ -15,5 +15,5 @@ CREATE TABLE event (
     ip VARCHAR(255),
     port INT,
     protocol INT,
-    dt TIME
+    dt INT
 );

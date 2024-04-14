@@ -4,4 +4,3 @@ __pycache__/
 db/
 ip2location/*
 !ip2location/README.txt
-postgres-db/

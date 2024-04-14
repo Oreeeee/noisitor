@@ -18,7 +18,6 @@ def load_config() -> None:
     # Creates config from values in ENV
     NoisitordConfig.interface = os.environ["NOISITOR_IFACE"]
     NoisitordConfig.ports = os.environ["NOISITOR_PORTS"].split(",")
-    NoisitordConfig.db_username = os.environ["DB_USERNAME"]
     NoisitordConfig.db_password = os.environ["DB_PASSWORD"]
     NoisitordConfig.db_port = int(os.environ["DB_PORT"])
     NoisitordConfig.debug = False if os.environ["NOISITORD_DEBUG"] == "false" else True

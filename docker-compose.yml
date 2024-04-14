@@ -12,7 +12,6 @@ services:
   backend:
     build: ./noisitor-backend
     environment:
-      - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
     volumes:
       - ./dbmanager/db.py:/app/db.py
@@ -22,7 +21,6 @@ services:
     environment:
       - NOISITOR_IFACE=${NOISITOR_IFACE}
       - NOISITOR_PORTS=${NOISITOR_PORTS}
-      - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_PORT=${DB_PORT}
       - NOISITORD_DEBUG=${NOISITORD_DEBUG}
@@ -33,16 +31,14 @@ services:
     cap_add:
       - NET_ADMIN
 
-  # TODO: Change to db
-  postgres-db:
+  db:
     image: postgres:16
     restart: always
     volumes:
       - ./postgres-db:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      # TODO: Change to DB_PORT
-      - 5432:5432
+      - ${DB_PORT}:5432
     environment:
       - POSTGRES_USER=noisitor
       - POSTGRES_PASSWORD=${DB_PASSWORD}

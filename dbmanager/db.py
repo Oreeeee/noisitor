@@ -10,7 +10,7 @@ import time
 class DBConn:
     password: str
     port: int = 5432
-    host: str = "postgres-db"  # TODO: Replace host to db in the future
+    host: str = "db"
 
 
 @dataclass

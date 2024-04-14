@@ -53,9 +53,15 @@ class EventLocationJoin:
 
 
 def get_connection(dbconn: DBConn) -> psycopg.Connection:
-    return psycopg.connect(
-        f"host={dbconn.host} port={dbconn.port} user=noisitor password={dbconn.password}"
-    )
+    while True:
+        try:
+            conn = psycopg.connect(
+                f"host={dbconn.host} port={dbconn.port} user=noisitor password={dbconn.password}"
+            )
+            return conn
+        except psycopg.OperationalError:
+            logging.info("Failed to connect to DB")
+            time.sleep(0.5)
 
 
 def insert_event(conn: psycopg.Connection, ip: str, port: int) -> None:

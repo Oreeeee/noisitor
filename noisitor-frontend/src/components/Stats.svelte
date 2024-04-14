@@ -4,9 +4,9 @@
 
 <div>
   Unique IPs logged:
-  <h2>{stats.unique}</h2>
+  <h1>{stats.unique}</h1>
   <br />
   Events logged:
-  <h2>{stats.total}</h2>
+  <h1>{stats.total}</h1>
   <br />
 </div>

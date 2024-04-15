@@ -32,7 +32,9 @@
       <a href="/show-all"
         ><button class="wide-button">Show all events</button></a
       ><br /><br />
-      <button class="wide-button">Search the database</button><br /><br />
+      <a href="/top"><button class="wide-button">Show top statistics</button></a
+      >
+      <br /><br />
       <button class="wide-button contrast">More statistics</button>
     </div>
   </div>

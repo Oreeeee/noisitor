@@ -1,4 +1,3 @@
-// TODO: Make this fetching better, maybe fetch one JSON file?
 export async function fetchStats(server = false) {
   let endpoint;
   if (server) {
@@ -19,6 +18,12 @@ export async function fetchEvents(server = false, count) {
     endpoint = `/data/events/${count}`;
   }
   const res = await fetch(endpoint);
+  const ret = await res.json();
+  return ret;
+}
+
+export async function fetchTops() {
+  const res = await fetch("http://backend:8000/data/tops");
   const ret = await res.json();
   return ret;
 }

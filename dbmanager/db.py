@@ -184,4 +184,14 @@ def get_tops(conn: psycopg.Connection) -> dict[str, list[dict[str, int]]]:
         """
         ).fetchall()
 
-    return {"ports": top_ports, "countries": top_countries}
+        top_ips: list[dict[str, int]] = cur.execute(
+            """
+            SELECT
+            DISTINCT ip, COUNT(ip)
+            FROM event
+            GROUP BY ip
+            ORDER BY count DESC;
+        """
+        ).fetchall()
+
+    return {"ports": top_ports, "countries": top_countries, "ips": top_ips}

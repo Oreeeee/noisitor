@@ -27,3 +27,15 @@ export async function fetchTops() {
   const ret = await res.json();
   return ret;
 }
+
+export async function fetchStartedTime() {
+  const res = await fetch("http://backend:8000/data/started-time");
+  const ret = await res.json();
+  return ret;
+}
+
+export async function fetchMonitoredPorts() {
+  const res = await fetch("http://backend:8000/data/monitored-ports");
+  const ret = await res.json();
+  return ret;
+}

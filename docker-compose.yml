@@ -16,6 +16,7 @@ services:
     restart: always
     environment:
       - DB_PASSWORD=${DB_PASSWORD}
+      - NOISITOR_PORTS=${NOISITOR_PORTS}
     volumes:
       - ./dbmanager/db.py:/app/db.py
 

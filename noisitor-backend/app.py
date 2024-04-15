@@ -57,6 +57,11 @@ async def get_tops() -> dict:
     return tops
 
 
+@get("/data/monitored-ports")
+async def get_monitored_ports() -> list:
+    return os.environ["NOISITOR_PORTS"].split(",")
+
+
 @get("/data/keepalive")
 async def keepalive() -> None:
     return
@@ -74,6 +79,7 @@ app = Litestar(
         get_ip_events,
         get_events,
         get_tops,
+        get_monitored_ports,
         keepalive,
     ],
     exception_handlers={Exception: lambda r, e: traceback.format_exc()},

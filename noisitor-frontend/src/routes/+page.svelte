@@ -35,7 +35,7 @@
       <a href="/top"><button class="wide-button">Show top statistics</button></a
       >
       <br /><br />
-      <button class="wide-button contrast">More statistics</button>
+      <a href="/about"><button class="wide-button contrast">About</button></a>
     </div>
   </div>
 

@@ -46,7 +46,7 @@
         {/each}
       </table>
     </div>
-  {:else if (showingScreen = "country")}
+  {:else if (showingScreen == "country")}
     <div>
       <h3>Top countries</h3>
       <hr />
@@ -63,7 +63,7 @@
         {/each}
       </table>
     </div>
-  {:else if (showingScreen = "port")}
+  {:else if (showingScreen == "port")}
     <div>
       <h3>Top ports</h3>
       <hr />

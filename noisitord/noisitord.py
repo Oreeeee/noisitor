@@ -78,16 +78,17 @@ def main() -> None:
     logger.debug("Starting sniffing loop")
     for packet in sniffer():
         logger.debug("Packet just received")
-        with db.get_connection(db_cred) as conn:
-            logger.debug("Adding the packet info to the DB")
-            db.insert_event(conn, packet.ip.src, packet.tcp.dstport)
-            # Save geolocation
-            if ip2loc_db != None:
-                logger.debug("Getting geolocation data")
-                db.insert_geolocation(conn, ip2loc_db.get_all(packet.ip.src).__dict__)
-            logger.info(
-                f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
+        logger.debug("Adding the packet info to the DB")
+        db.insert_event(db.get_connection(db_cred), packet.ip.src, packet.tcp.dstport)
+        # Save geolocation
+        if ip2loc_db != None:
+            logger.debug("Getting geolocation data")
+            db.insert_geolocation(
+                db.get_connection(db_cred), ip2loc_db.get_all(packet.ip.src).__dict__
             )
+        logger.info(
+            f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
+        )
 
 
 if __name__ == "__main__":

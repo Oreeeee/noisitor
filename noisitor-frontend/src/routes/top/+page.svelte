@@ -1,5 +1,6 @@
 <script>
   export let data;
+  import MoreInfoButton from "../../components/MoreInfoButton.svelte";
   let tops = data.tops;
 
   let showingScreen = "ip";
@@ -37,16 +38,18 @@
         <tr>
           <th><strong>IP</strong></th>
           <th><strong>Count</strong></th>
+          <th><strong>More info</strong></th>
         </tr>
         {#each tops.ips as ip}
           <tr>
             <td>{ip.ip}</td>
             <td>{ip.count}</td>
+            <td><MoreInfoButton ip={ip.ip} /></td>
           </tr>
         {/each}
       </table>
     </div>
-  {:else if (showingScreen == "country")}
+  {:else if showingScreen == "country"}
     <div>
       <h3>Top countries</h3>
       <hr />
@@ -63,7 +66,7 @@
         {/each}
       </table>
     </div>
-  {:else if (showingScreen == "port")}
+  {:else if showingScreen == "port"}
     <div>
       <h3>Top ports</h3>
       <hr />

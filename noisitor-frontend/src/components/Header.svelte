@@ -25,7 +25,12 @@
 
 <div id="header" class="pico">
   <hgroup>
-    <a href="/" style="text-decoration:none"><h1>Noisitor</h1></a>
+    <a href="/" style="text-decoration:none">
+      <h1 id="name-link">
+        <img id="logo" src="/logo.png" alt="Logo">
+        Noisitor
+      </h1>
+    </a>
     <h6>Uptime: {uptimeHR}</h6>
   </hgroup>
   <KeepAliveTester />

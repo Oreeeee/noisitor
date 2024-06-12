@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "PoetsenOne";
+  src: local("PoetsenOne-Regular"), url("/PoetsenOne-Regular.ttf");
+}
+
 .site-contents {
   padding: 30px;
 }
@@ -19,4 +24,13 @@
 
 .wide-button {
   width: 100%;
+}
+
+#logo {
+  width: 50px;
+  height: 50px;
+}
+
+#name-link {
+  font-family: "PoetsenOne";
 }

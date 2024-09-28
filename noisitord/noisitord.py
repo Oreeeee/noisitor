@@ -59,13 +59,13 @@ def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
     response = r.city(ip)
     return {
         "ip": ip,
-        "latitude": response.location.latitude,
-        "longitude": response.location.longitude,
+        "lat": response.location.latitude,
+        "long": response.location.longitude,
         "country_long": response.country.name,
         "country_short": response.country.iso_code,
         "region": response.subdivisions.most_specific.name,
         "city": response.city.name,
-        "zipcode": response.postal.code,
+        "zip_code": response.postal.code,
     }
 
 def main() -> None:

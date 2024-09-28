@@ -2,5 +2,5 @@
 __pycache__/
 .env
 db/
-ip2location/*
+geolite2/
 !ip2location/README.txt

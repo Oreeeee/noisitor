@@ -72,7 +72,7 @@ def main() -> None:
     logger.debug("Checking for GeoLite2 DB presence")
     if os.path.isfile("/geolite2/GeoLite2-City.mmdb"):
         logger.debug("GeoLite2 DB found")
-        geodb = geoip2.database.Reader("/geolite2/GeoLite2-Coty.mmdb")
+        geodb = geoip2.database.Reader("/geolite2/GeoLite2-City.mmdb")
     else:
         logger.warning(
             "GeoLite2 database not availible. Geolocation will be disabled."

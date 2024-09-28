@@ -3,6 +3,7 @@ import os
 import IP2Location
 import logging
 import db
+import geoip2.database
 
 
 class NoisitordConfig:
@@ -54,16 +55,28 @@ def fake_ip_generator():
             tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
         )
 
+def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
+    response = r.city(ip)
+    return {
+        "ip": ip,
+        "latitude": response.location.latitude,
+        "longitude": response.location.longitude,
+        "country_long": response.country.name,
+        "country_short": response.country.iso_code,
+        "region": response.subdivisions.most_specific.name,
+        "city": response.city.name,
+        "zipcode": response.postal.code,
+    }
 
 def main() -> None:
     # IP2Location initialisation
-    logger.debug("Checking for IP2Location DB presence")
-    if os.path.isfile("/ip2location/IPDB.BIN"):
-        logger.debug("IP2Location DB found")
-        ip2loc_db = IP2Location.IP2Location("/ip2location/IPDB.BIN")
+    logger.debug("Checking for GeoLite2 DB presence")
+    if os.path.isfile("/ip2location/GeoLite2-City.mmdb"):
+        logger.debug("GeoLite2 DB found")
+        ip2loc_db = geoip2.database.Reader("/ip2location/GeoLite2-Coty.mmdb")
     else:
         logger.warning(
-            "IP2Location database not availible. Geolocation will be disabled."
+            "GeoLite2 database not availible. Geolocation will be disabled."
         )
         ip2loc_db = None
 
@@ -85,7 +98,7 @@ def main() -> None:
         if ip2loc_db != None:
             logger.debug("Getting geolocation data")
             with db.get_connection(db_cred) as conn:
-                db.insert_geolocation(conn, ip2loc_db.get_all(packet.ip.src).__dict__)
+                db.insert_geolocation(conn, fetch_geolocation_data(ip2loc_db, packet.ip.src))
         logger.info(
             f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
         )

@@ -76,7 +76,7 @@ def insert_geolocation(conn: psycopg.Connection, loc: dict) -> None:
     with conn.cursor() as cur:
         try:
             cur.execute(
-                "INSERT INTO location (ip, lat, long, country_long, country_short, region, city, zip_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                "INSERT INTO location (ip, lat, long, country_long, country_short, region, city) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                 (
                     loc["ip"],
                     loc["lat"],
@@ -85,7 +85,6 @@ def insert_geolocation(conn: psycopg.Connection, loc: dict) -> None:
                     loc["country_short"],
                     loc["region"],
                     loc["city"],
-                    loc["zip_code"],
                 ),
             )
         except psycopg.errors.UniqueViolation:

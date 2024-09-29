@@ -55,9 +55,10 @@ def fake_ip_generator():
             tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
         )
 
-def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
+def fetch_geolocation_data(geo: geoip2.database.Reader, asn: geoip2.database.Reader, ip: str) -> dict:
     try:
-        response = r.city(ip)
+        geo_response = geo.city(ip)
+        asn_response = asn.asn(ip)
     except geoip2.errors.AddressNotFoundError:
         logger.info(f"No geolocation data for IP {ip}")
         return {
@@ -69,17 +70,23 @@ def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
             "region": "",
             "city": "",
             "zip_code": "",
+            "asn": 0,
+            "isp": "",
+            "network": "",
         }
 
     return {
         "ip": ip,
-        "lat": response.location.latitude,
-        "long": response.location.longitude,
-        "country_long": response.country.name,
-        "country_short": response.country.iso_code,
-        "region": response.subdivisions.most_specific.name,
-        "city": response.city.name,
-        "zip_code": response.postal.code,
+        "lat": geo_response.location.latitude,
+        "long": geo_response.location.longitude,
+        "country_long": geo_response.country.name,
+        "country_short": geo_response.country.iso_code,
+        "region": geo_response.subdivisions.most_specific.name,
+        "city": geo_response.city.name,
+        "zip_code": geo_response.postal.code,
+        "asn": asn_response.autonomous_system_number,
+        "isp": asn_response.autonomous_system_organization,
+        "network": str(asn_response.network),
     }
 
 def main() -> None:

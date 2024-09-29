@@ -32,7 +32,9 @@ class Location:
     region: str
     city: str
     zip_code: str
-    tzone: str
+    asn: int
+    isp: str
+    network: str
 
 
 @dataclass
@@ -49,7 +51,9 @@ class EventLocationJoin:
     region: str
     city: str
     zip_code: str
-    tzone: str
+    asn: int
+    isp: str
+    network: str
 
 
 def get_connection(dbconn: DBConn) -> psycopg.Connection:
@@ -76,7 +80,7 @@ def insert_geolocation(conn: psycopg.Connection, loc: dict) -> None:
     with conn.cursor() as cur:
         try:
             cur.execute(
-                "INSERT INTO location (ip, lat, long, country_long, country_short, region, city, zip_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                "INSERT INTO location (ip, lat, long, country_long, country_short, region, city, zip_code, asn, isp, network) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (
                     loc["ip"],
                     loc["lat"],
@@ -86,6 +90,9 @@ def insert_geolocation(conn: psycopg.Connection, loc: dict) -> None:
                     loc["region"],
                     loc["city"],
                     loc["zip_code"],
+                    loc["asn"],
+                    loc["isp"],
+                    loc["network"],
                 ),
             )
         except psycopg.errors.UniqueViolation:

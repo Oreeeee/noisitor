@@ -6,7 +6,10 @@ CREATE TABLE location (
     country_short VARCHAR(2),
     region VARCHAR(255),
     city VARCHAR(255),
-    zip_code VARCHAR(255)
+    zip_code VARCHAR(255),
+    asn INT,
+    isp VARCHAR(255),
+    network VARCHAR(255)
 );
 
 CREATE TABLE event (

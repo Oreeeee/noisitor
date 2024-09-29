@@ -1,0 +1,11 @@
+ALTER TABLE location
+ADD COLUMN asn INT;
+
+ALTER TABLE location
+ADD COLUMN isp VARCHAR(255);
+
+ALTER TABLE location
+ADD COLUMN network VARCHAR(255);
+
+ALTER TABLE location
+DROP COLUMN tzone;

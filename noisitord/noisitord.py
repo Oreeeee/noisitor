@@ -55,44 +55,66 @@ def fake_ip_generator():
             tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
         )
 
-def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
+
+def fetch_geolocation_data(geo: geoip2.database.Reader, asn: geoip2.database.Reader, ip: str) -> dict:
+    loc_data: dict = {}
+
+    # Try and get Geolocation data
     try:
-        response = r.city(ip)
+        geo_response = geo.city(ip)
+
+        logger.info(f"Geolocation data found for IP {ip}")
+        loc_data["ip"] = ip
+        loc_data["lat"] = geo_response.location.latitude
+        loc_data["long"] = geo_response.location.longitude
+        loc_data["country_long"] = geo_response.country.name
+        loc_data["country_short"] = geo_response.country.iso_code
+        loc_data["region"] = geo_response.subdivisions.most_specific.name
+        loc_data["city"] = geo_response.city.name
+        loc_data["zip_code"] = geo_response.postal.code
     except geoip2.errors.AddressNotFoundError:
         logger.info(f"No geolocation data for IP {ip}")
-        return {
-            "ip": ip,
-            "lat": 0.0,
-            "long": 0.0,
-            "country_long": "",
-            "country_short": "",
-            "region": "",
-            "city": "",
-            "zip_code": "",
-        }
+        loc_data["ip"] = ip
+        loc_data["lat"] = 0.0
+        loc_data["long"] = 0.0
+        loc_data["country_long"] = ""
+        loc_data["country_short"] = ""
+        loc_data["region"] = ""
+        loc_data["city"] = ""
+        loc_data["zip_code"] = ""
 
-    return {
-        "ip": ip,
-        "lat": response.location.latitude,
-        "long": response.location.longitude,
-        "country_long": response.country.name,
-        "country_short": response.country.iso_code,
-        "region": response.subdivisions.most_specific.name,
-        "city": response.city.name,
-        "zip_code": response.postal.code,
-    }
+    # Try and get ASN data
+    try:
+        asn_response = asn.asn(ip)
+
+        logger.info(f"ASN data found for IP {ip}")
+        loc_data["asn"] = asn_response.autonomous_system_number
+        loc_data["isp"] = asn_response.autonomous_system_organization
+        loc_data["network"] = str(asn_response.network)
+    except geoip2.errors.AddressNotFoundError:
+        logger.info(f"No ASN data for IP {ip}")
+        loc_data["asn"] = 0
+        loc_data["isp"] = ""
+        loc_data["network"] = ""
+
+    logger.debug(loc_data)
+    return loc_data
+
 
 def main() -> None:
     # IP2Location initialisation
     logger.debug("Checking for GeoLite2 DB presence")
-    if os.path.isfile("/geolite2/GeoLite2-City.mmdb"):
+    geolocation_present: bool
+    if os.path.isfile("/geolite2/GeoLite2-City.mmdb") and os.path.isfile("/geolite2/GeoLite2-ASN.mmdb"):
         logger.debug("GeoLite2 DB found")
-        geodb = geoip2.database.Reader("/geolite2/GeoLite2-City.mmdb")
+        geodb_ip = geoip2.database.Reader("/geolite2/GeoLite2-City.mmdb")
+        geodb_asn = geoip2.database.Reader("/geolite2/GeoLite2-ASN.mmdb")
+        geolocation_present = True
     else:
         logger.warning(
             "GeoLite2 database not availible. Geolocation will be disabled."
         )
-        geodb = None
+        geolocation_present = False
 
     if not NoisitordConfig.debug:
         sniffer: function = pyshark.LiveCapture(
@@ -109,10 +131,10 @@ def main() -> None:
         with db.get_connection(db_cred) as conn:
             db.insert_event(conn, packet.ip.src, packet.tcp.dstport)
         # Save geolocation
-        if geodb != None:
+        if geolocation_present:
             logger.debug("Getting geolocation data")
             with db.get_connection(db_cred) as conn:
-                db.insert_geolocation(conn, fetch_geolocation_data(geodb, packet.ip.src))
+                db.insert_geolocation(conn, fetch_geolocation_data(geodb_ip, geodb_asn, packet.ip.src))
         logger.info(
             f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
         )

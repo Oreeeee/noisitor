@@ -92,14 +92,17 @@ def fetch_geolocation_data(geo: geoip2.database.Reader, asn: geoip2.database.Rea
 def main() -> None:
     # IP2Location initialisation
     logger.debug("Checking for GeoLite2 DB presence")
-    if os.path.isfile("/geolite2/GeoLite2-City.mmdb"):
+    geolocation_present: bool
+    if os.path.isfile("/geolite2/GeoLite2-City.mmdb") and os.path.isfile("/geolite2/GeoLite2-ASN.mmdb"):
         logger.debug("GeoLite2 DB found")
         geodb_ip = geoip2.database.Reader("/geolite2/GeoLite2-City.mmdb")
+        geodb_asn = geoip2.database.Reader("/geolite2/GeoLite2-ASN.mmdb")
+        geolocation_present = True
     else:
         logger.warning(
             "GeoLite2 database not availible. Geolocation will be disabled."
         )
-        geodb_ip = None
+        geolocation_present = False
 
     if not NoisitordConfig.debug:
         sniffer: function = pyshark.LiveCapture(
@@ -116,10 +119,10 @@ def main() -> None:
         with db.get_connection(db_cred) as conn:
             db.insert_event(conn, packet.ip.src, packet.tcp.dstport)
         # Save geolocation
-        if geodb_ip != None:
+        if geolocation_present:
             logger.debug("Getting geolocation data")
             with db.get_connection(db_cred) as conn:
-                db.insert_geolocation(conn, fetch_geolocation_data(geodb_ip, packet.ip.src))
+                db.insert_geolocation(conn, fetch_geolocation_data(geodb_ip, geodb_asn, packet.ip.src))
         logger.info(
             f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
         )

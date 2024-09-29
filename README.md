@@ -15,4 +15,4 @@ This project listens to incoming packets from port scanners, saves them in a dat
 - Run the project: `docker-compose up -d`
 
 ## Attribution
-- Noisitor uses the IP2Location LITE database for [IP geolocation](https://lite.ip2location.com)
+- This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).

@@ -3,6 +3,7 @@ import os
 import logging
 import db
 import geoip2.database
+import geoip2.errors
 
 
 class NoisitordConfig:
@@ -55,7 +56,21 @@ def fake_ip_generator():
         )
 
 def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
-    response = r.city(ip)
+    try:
+        response = r.city(ip)
+    except geoip2.errors.AddressNotFoundError:
+        logger.info(f"No geolocation data for IP {ip}")
+        return {
+            "ip": ip,
+            "lat": 0.0,
+            "long": 0.0,
+            "country_long": "",
+            "country_short": "",
+            "region": "",
+            "city": "",
+            "zip_code": "",
+        }
+
     return {
         "ip": ip,
         "lat": response.location.latitude,

@@ -55,39 +55,51 @@ def fake_ip_generator():
             tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
         )
 
+
 def fetch_geolocation_data(geo: geoip2.database.Reader, asn: geoip2.database.Reader, ip: str) -> dict:
+    loc_data: dict = {}
+
+    # Try and get Geolocation data
     try:
         geo_response = geo.city(ip)
-        asn_response = asn.asn(ip)
+
+        logger.info(f"Geolocation data found for IP {ip}")
+        loc_data["ip"] = ip
+        loc_data["lat"] = geo_response.location.latitude
+        loc_data["long"] = geo_response.location.longitude
+        loc_data["country_long"] = geo_response.country.name
+        loc_data["country_short"] = geo_response.country.iso_code
+        loc_data["region"] = geo_response.subdivisions.most_specific.name
+        loc_data["city"] = geo_response.city.name
+        loc_data["zip_code"] = geo_response.postal.code
     except geoip2.errors.AddressNotFoundError:
         logger.info(f"No geolocation data for IP {ip}")
-        return {
-            "ip": ip,
-            "lat": 0.0,
-            "long": 0.0,
-            "country_long": "",
-            "country_short": "",
-            "region": "",
-            "city": "",
-            "zip_code": "",
-            "asn": 0,
-            "isp": "",
-            "network": "",
-        }
+        loc_data["ip"] = ip
+        loc_data["lat"] = 0.0
+        loc_data["long"] = 0.0
+        loc_data["country_long"] = ""
+        loc_data["country_short"] = ""
+        loc_data["region"] = ""
+        loc_data["city"] = ""
+        loc_data["zip_code"] = ""
 
-    return {
-        "ip": ip,
-        "lat": geo_response.location.latitude,
-        "long": geo_response.location.longitude,
-        "country_long": geo_response.country.name,
-        "country_short": geo_response.country.iso_code,
-        "region": geo_response.subdivisions.most_specific.name,
-        "city": geo_response.city.name,
-        "zip_code": geo_response.postal.code,
-        "asn": asn_response.autonomous_system_number,
-        "isp": asn_response.autonomous_system_organization,
-        "network": str(asn_response.network),
-    }
+    # Try and get ASN data
+    try:
+        asn_response = asn.asn(ip)
+
+        logger.info(f"ASN data found for IP {ip}")
+        loc_data["asn"] = asn_response.autonomous_system_number
+        loc_data["isp"] = asn_response.autonomous_system_organization
+        loc_data["network"] = str(asn_response.network)
+    except geoip2.errors.AddressNotFoundError:
+        logger.info(f"No ASN data for IP {ip}")
+        loc_data["asn"] = 0
+        loc_data["isp"] = ""
+        loc_data["network"] = ""
+
+    logger.debug(loc_data)
+    return loc_data
+
 
 def main() -> None:
     # IP2Location initialisation

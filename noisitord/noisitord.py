@@ -1,8 +1,9 @@
 import pyshark
 import os
-import IP2Location
 import logging
 import db
+import geoip2.database
+import geoip2.errors
 
 
 class NoisitordConfig:
@@ -54,18 +55,44 @@ def fake_ip_generator():
             tcp=SimpleNamespace(dstport=random.randint(0, 65535)),
         )
 
+def fetch_geolocation_data(r: geoip2.database.Reader, ip: str) -> dict:
+    try:
+        response = r.city(ip)
+    except geoip2.errors.AddressNotFoundError:
+        logger.info(f"No geolocation data for IP {ip}")
+        return {
+            "ip": ip,
+            "lat": 0.0,
+            "long": 0.0,
+            "country_long": "",
+            "country_short": "",
+            "region": "",
+            "city": "",
+            "zip_code": "",
+        }
+
+    return {
+        "ip": ip,
+        "lat": response.location.latitude,
+        "long": response.location.longitude,
+        "country_long": response.country.name,
+        "country_short": response.country.iso_code,
+        "region": response.subdivisions.most_specific.name,
+        "city": response.city.name,
+        "zip_code": response.postal.code,
+    }
 
 def main() -> None:
     # IP2Location initialisation
-    logger.debug("Checking for IP2Location DB presence")
-    if os.path.isfile("/ip2location/IPDB.BIN"):
-        logger.debug("IP2Location DB found")
-        ip2loc_db = IP2Location.IP2Location("/ip2location/IPDB.BIN")
+    logger.debug("Checking for GeoLite2 DB presence")
+    if os.path.isfile("/geolite2/GeoLite2-City.mmdb"):
+        logger.debug("GeoLite2 DB found")
+        geodb = geoip2.database.Reader("/geolite2/GeoLite2-City.mmdb")
     else:
         logger.warning(
-            "IP2Location database not availible. Geolocation will be disabled."
+            "GeoLite2 database not availible. Geolocation will be disabled."
         )
-        ip2loc_db = None
+        geodb = None
 
     if not NoisitordConfig.debug:
         sniffer: function = pyshark.LiveCapture(
@@ -82,10 +109,10 @@ def main() -> None:
         with db.get_connection(db_cred) as conn:
             db.insert_event(conn, packet.ip.src, packet.tcp.dstport)
         # Save geolocation
-        if ip2loc_db != None:
+        if geodb != None:
             logger.debug("Getting geolocation data")
             with db.get_connection(db_cred) as conn:
-                db.insert_geolocation(conn, ip2loc_db.get_all(packet.ip.src).__dict__)
+                db.insert_geolocation(conn, fetch_geolocation_data(geodb, packet.ip.src))
         logger.info(
             f"An event just happenned: {packet.ip.src}, {packet.tcp.dstport}, {6}",
         )
